@@ -4,6 +4,7 @@ import type { GameCanvasRef } from './types/components';
 import { Menu } from './components/Menu';
 import { HUD } from './components/HUD';
 import { GameOver } from './components/GameOver';
+import { MobileControls } from './components/MobileControls';
 import type { GameStatus, GameState } from './types/game';
 import type { GameEngine } from './core/GameEngine';
 
@@ -32,6 +33,10 @@ function App() {
 
   const handleMenu = () => {
     setGameStatus('menu');
+  };
+
+  const handleSkillUse = (skill: string) => {
+    gameCanvasRef.current?.useSkill(skill);
   };
 
   const handleStateUpdate = (state: GameState) => {
@@ -68,6 +73,11 @@ function App() {
           survivalTime={gameState.survivalTime}
           mass={playerMass}
         />
+      )}
+
+      {/* 移动端技能按钮 */}
+      {gameStatus === 'playing' && (
+        <MobileControls onSkillUse={handleSkillUse} />
       )}
 
       {/* 游戏结束 */}
