@@ -857,16 +857,24 @@ export class GameEngine {
     player.mass = newMass;
     player.radius = this.massToRadius(newMass); // 更新原球半径
 
-    // 创建分裂出的新球
+    // 计算分裂方向 - 垂直于当前移动方向
+    const splitAngle = Math.atan2(player.vy, player.vx) + Math.PI / 2;
+    const splitDistance = player.radius * 3; // 分裂距离为半径的3倍
+
+    // 原球向一个方向移动
+    player.x += Math.cos(splitAngle) * splitDistance;
+    player.y += Math.sin(splitAngle) * splitDistance;
+
+    // 创建分裂出的新球 - 向相反方向移动
     const newBall: Ball = {
       ...player,
       id: `player-${Date.now()}`,
       mass: newMass,
       radius: this.massToRadius(newMass), // 明确设置新球半径
-      x: player.x + (Math.random() - 0.5) * 50,
-      y: player.y + (Math.random() - 0.5) * 50,
-      vx: player.vx + (Math.random() - 0.5) * 3,
-      vy: player.vy + (Math.random() - 0.5) * 3,
+      x: player.x - Math.cos(splitAngle) * splitDistance * 2, // 新球在原球的相反方向
+      y: player.y - Math.sin(splitAngle) * splitDistance * 2,
+      vx: -player.vx + (Math.random() - 0.5) * 2, // 速度方向相反
+      vy: -player.vy + (Math.random() - 0.5) * 2,
       skills: {
         sprint: { cooldown: 5000, lastUsed: 0, cost: 0.1, active: false },
         split: { cooldown: 10000, lastUsed: 0, cost: 0.5, active: false },
@@ -879,6 +887,7 @@ export class GameEngine {
     this.balls.push(newBall);
 
     console.log(`[技能] 分裂成功！现在有 ${this.playerBalls.length} 个玩家球`);
+    console.log(`[调试] 原球位置: (${Math.floor(player.x)}, ${Math.floor(player.y)}), 新球位置: (${Math.floor(newBall.x)}, ${Math.floor(newBall.y)})`);
 
     // 创建分裂特效
     this.createParticles(player.x, player.y, player.color, 30);
