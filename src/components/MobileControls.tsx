@@ -6,8 +6,18 @@ interface MobileControlsProps {
 
 export const MobileControls: React.FC<MobileControlsProps> = ({ onSkillUse }) => {
   return (
-    <div className="fixed bottom-4 left-0 right-0 z-50 md:hidden">
-      <div className="flex justify-center gap-4 px-4">
+    <div
+      className="fixed bottom-4 left-0 right-0 z-50"
+      style={{ display: 'block' }}
+    >
+      <style>{`
+        @media (min-width: 768px) {
+          .mobile-controls-container {
+            display: none !important;
+          }
+        }
+      `}</style>
+      <div className="mobile-controls-container flex justify-center gap-4 px-4">
         <button
           onClick={() => onSkillUse('sprint')}
           className="flex-1 max-w-[100px] aspect-square rounded-full bg-neon-blue/20 border-2 border-neon-blue text-white font-bold text-lg active:scale-95 transition-all neon-border"

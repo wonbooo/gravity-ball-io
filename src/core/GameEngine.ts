@@ -855,17 +855,23 @@ export class GameEngine {
   private splitPlayer(player: Ball) {
     const newMass = player.mass / 2;
     player.mass = newMass;
+    player.radius = this.massToRadius(newMass); // 更新原球半径
 
     // 创建分裂出的新球
     const newBall: Ball = {
       ...player,
       id: `player-${Date.now()}`,
       mass: newMass,
+      radius: this.massToRadius(newMass), // 明确设置新球半径
       x: player.x + (Math.random() - 0.5) * 50,
       y: player.y + (Math.random() - 0.5) * 50,
       vx: player.vx + (Math.random() - 0.5) * 3,
       vy: player.vy + (Math.random() - 0.5) * 3,
-      skills: { ...player.skills },
+      skills: {
+        sprint: { cooldown: 5000, lastUsed: 0, cost: 0.1, active: false },
+        split: { cooldown: 10000, lastUsed: 0, cost: 0.5, active: false },
+        gravityWave: { cooldown: 8000, lastUsed: 0, cost: 0.2, active: false },
+      },
     };
 
     // 只添加新球到数组（原球已经在数组中了）
