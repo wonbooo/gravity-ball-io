@@ -442,6 +442,11 @@ export class GameEngine {
 
         // 当两个球接触时，质量大的直接吞噬质量小的
         if (dist < ball1.radius + ball2.radius) {
+          // 玩家自己的球不会互相吞噬
+          if (ball1.isPlayer && ball2.isPlayer) {
+            continue;
+          }
+
           if (ball1.mass > ball2.mass) {
             this.eatBall(ball1, ball2, j);
             j--;
